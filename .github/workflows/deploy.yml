@@ -3,40 +3,44 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch: # Pinapayagan ka nitong i-run ang deploy nang manual kung gusto mo
 
 permissions:
-  contents: write  # Binago mula 'read' para payagan ang pag-push sa gh-pages branch
+  contents: write
   pages: write
   id-token: write
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true # Ginawang Node 20 para mag-match sa setup step mo
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        # Mas safe ang 'install' kung may mga peerDependency issues, 
+        # pero 'ci' ang best practice para sa automation.
+        run: npm install 
 
-    - name: Build
-      run: npm run build
+      - name: Build
+        run: npm run build
 
-    - name: Deploy to GitHub Pages
-      if: github.ref == 'refs/heads/main'
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
+      # Solusyon sa 404 error ng React Router sa GitHub Pages
+      - name: Create 404.html for SPA support
+        run: cp dist/index.html dist/404.html
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          # Siguraduhin na 'Arcadia' ang pangalan ng repo mo sa URL base
+          force_orphan: true
