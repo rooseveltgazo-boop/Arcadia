@@ -7,12 +7,12 @@ on:
     branches: [ main ]
 
 permissions:
-  contents: read
+  contents: write  # Binago mula 'read' para payagan ang pag-push sa gh-pages branch
   pages: write
   id-token: write
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true # Ginawang Node 20 para mag-match sa setup step mo
 
 jobs:
   build-and-deploy:
