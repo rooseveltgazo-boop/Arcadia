@@ -431,4 +431,5 @@ VITE_STRIPE_PUBLIC_KEY=pk_xxx
 
 © 2026 Arcadia Crystal Resort. All rights reserved.
 #   A r c a d i a  
+ #   A r c a d i a  
  
