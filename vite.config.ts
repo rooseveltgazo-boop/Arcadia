@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   // Ito ang kailangang-kailangan para sa GitHub Pages
-  base: '/Arcadia/', 
+  base: process.env.NODE_ENV === 'production' ? '/Arcadia/' : '/',
   plugins: [
     // The React and Tailwind plugins are both required for Make, even if
     // Tailwind is not being actively used – do not remove them
